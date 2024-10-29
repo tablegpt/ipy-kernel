@@ -9,7 +9,7 @@ RUN apt-get update \
 
 COPY requirements.txt .
 
-RUN python -m pip install -r requirements.txt
+RUN python -m pip install --no-cache-dir -r requirements.txt
 RUN mplfonts init
 
 USER $NB_UID
