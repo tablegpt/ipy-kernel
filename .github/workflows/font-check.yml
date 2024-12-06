@@ -1,0 +1,58 @@
+name: Docker Image Font Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:  # Allows to trigger the workflow manually in GitHub UI
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-test-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5.6.1
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=sha,priority=850,prefix=
+
+      - name: Build the Docker image
+        id: build
+        run: |
+          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} .
+
+      - name: Run font check script
+        run: |
+          echo '
+          import matplotlib
+          font_family = matplotlib.rcParams["font.family"]
+          if "Noto Serif CJK SC" in font_family:
+              print("Font is correctly set to Noto Serif CJK SC")
+              exit(0)
+          else:
+              print("Font is not correctly set")
+              exit(1)
+          ' > check_font.py
+
+          docker run --rm -v $(pwd)/check_font.py:/check_font.py ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} python /check_font.py
+
+      - name: Clean up Docker images
+        run: |
+          docker rmi ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
