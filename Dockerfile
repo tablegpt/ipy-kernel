@@ -5,7 +5,7 @@ USER root
 # install chinese font
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
-  fonts-noto-cjk
+  fonts-noto-cjk libpq5
 
 COPY requirements.txt .
 
