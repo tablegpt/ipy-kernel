@@ -10,3 +10,5 @@ numexpr >=2.8.4
 openpyxl >=3.1.2,<4.0.0  # read xlsx files
 xlrd >= 2.0.1  # read xls files
 odfpy  # read ods files
+sqlalchemy>=2.0.28,<3.0.0
+psycopg>=3.2.1,<4.0.0
