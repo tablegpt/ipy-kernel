@@ -9,7 +9,7 @@ RUN apt-get update \
 
 COPY requirements.txt .
 
-RUN python -m pip install --no-cache-dir -r requirements.txt
+RUN python -m pip install --no-cache-dir --upgrade -r requirements.txt
 RUN mplfonts init
 # set chinese font for matplotlib
 RUN MATPLOTLIBRC=$(python -c "import matplotlib; print(matplotlib.matplotlib_fname())") && \
