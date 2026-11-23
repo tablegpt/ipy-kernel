@@ -1,4 +1,4 @@
-FROM elyra/kernel-py:3.2.3
+FROM elyra/kernel-py:3.4.0
 
 USER root
 
